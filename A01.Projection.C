@@ -28,10 +28,12 @@ void writeToRoot(TString outname);
 // Program starts here
 void projection() {
 
-	TString inputname = "input/outfile_hist_pp13TeV_set00_grp000_pT_try000.root";
+	//TString inputname = "input/outfile_hist_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA data
+	TString inputname = "input/outfile_hist_AMPT_pp_13TeV_grp003_pT_try000.root"; // AMPT data
 	load2DHistos(inputname);
 	makeLongRangeCorr();
-	TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root";
+	//TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA
+	TString outname = "output/fout_hist_proj_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
 	writeToRoot(outname);
 
 }
@@ -39,7 +41,7 @@ void projection() {
 /* 
 	Loops over .root files for same, mixed and trigger distributions and loads files to 2d histos
 */
-void load2DHistos(TString inputname = "input/outfile_hist_pp13TeV_set00_grp000_pT_try000.root"){
+void load2DHistos(TString inputname){
 
 	TFile *fIn = new TFile (inputname, "read"); // input file
 
@@ -48,8 +50,6 @@ void load2DHistos(TString inputname = "input/outfile_hist_pp13TeV_set00_grp000_p
 				h2D_same[ic][iptt] = (TH2D*) fIn->Get(Form("h2d_same_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
 				h2D_mixed[ic][iptt] = (TH2D*) fIn->Get(Form("h2d_mixed_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
 				hDeltaphi_trig[ic] = (TH1D*) fIn->Get(Form("hntrig_same_fmda_h_mult%02d", ic));	
-
-				cout << Form("pt%02d", iptt) << endl;
 
 			} // iptt
 		} // ic

@@ -24,16 +24,18 @@ void loadProjections(TString inputname);
 
 void twoPCDist(){
 
-	TString inputname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root";
+	//TString inputname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA
+	TString inputname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // AMPT
 	loadProjections(inputname);
 	twoParticleDist();
-	TString outname = "output/fout_2pacdist_hist_proj_pp13TeV.root";
+	//TString outname = "output/fout_2pacdist_hist_proj_pp13TeV.root"; // PYTHIA
+	TString outname = "output/fout_2pacdist_hist_proj_AMPT_pp13TeV.root"; // AMPT
 	toWriteRoot(outname);
 
 }
 
 
-void loadProjections(TString inputname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"){
+void loadProjections(TString inputname){
 
 	TFile *fIn = new TFile (inputname, "read"); // input file
 
