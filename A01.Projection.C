@@ -61,11 +61,11 @@ void makeLongRangeCorr() {
 	for (int ic = 0; ic < nbins_mult; ic++){
 		for (int iptt = 0; iptt < nbins_pt-1; iptt++){
 
-			hDeltaphi_same[ic][iptt] = (TH1D*) h2D_same[ic][iptt]->ProjectionX(Form("h2dsameETAG%02dC%02dPTT%02d", 00, ic, iptt), h2D_same[ic][iptt]->GetYaxis()->FindBin(4.8), h2D_same[ic][iptt]->GetYaxis()->FindBin(1.9));
+			hDeltaphi_same[ic][iptt] = (TH1D*) h2D_same[ic][iptt]->ProjectionX(Form("h2dsameETAG%02dC%02dPTT%02d", 00, ic, iptt), h2D_same[ic][iptt]->GetYaxis()->FindBin(1.9), h2D_same[ic][iptt]->GetYaxis()->FindBin(4.8));
 			//TH1D *hTemp_same = (TH1D*) h2D_same->ProjectionX(Form("h2dsameETAG%02dC%02diptt%02d", 00, 21, 00), h2D_same->GetYaxis()->FindBin(-3.1), h2D_same->GetYaxis()->FindBin(-1.9));
 			//hDeltaphi_same->Add(hTemp_same, 1);
 			
-			hDeltaphi_mixed[ic][iptt] = (TH1D*) h2D_mixed[ic][iptt]->ProjectionX(Form("h2dmixETAG%02dC%02dPTT%02d", 00, ic, iptt), h2D_mixed[ic][iptt]->GetYaxis()->FindBin(4.8), h2D_mixed[ic][iptt]->GetYaxis()->FindBin(1.9));
+			hDeltaphi_mixed[ic][iptt] = (TH1D*) h2D_mixed[ic][iptt]->ProjectionX(Form("h2dmixETAG%02dC%02dPTT%02d", 00, ic, iptt), h2D_mixed[ic][iptt]->GetYaxis()->FindBin(1.9), h2D_mixed[ic][iptt]->GetYaxis()->FindBin(4.8));
 			//TH1D *hTemp_mixed = (TH1D*) h2D_mixed->ProjectionX(Form("h2dmixETAG%02dC%02diptt%02d", 00, 21, 00), h2D_mixed->GetYaxis()->FindBin(-3.1), h2D_mixed->GetYaxis()->FindBin(-1.9));
 			//hDeltaphi_mixed->Add(hTemp_mixed, 1);
 
