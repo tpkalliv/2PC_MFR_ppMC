@@ -28,8 +28,8 @@ void twoPCDist(){
 	TString inputname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // AMPT
 	loadProjections(inputname);
 	twoParticleDist();
-	//TString outname = "output/fout_2pacdist_hist_proj_pp13TeV.root"; // PYTHIA
-	TString outname = "output/fout_2pacdist_hist_proj_AMPT_pp13TeV.root"; // AMPT
+	//TString outname = "output/fout_2pacdist_hist_pp13TeV.root"; // PYTHIA
+	TString outname = "output/fout_2pacdist_hist_AMPT_pp13TeV.root"; // AMPT
 	toWriteRoot(outname);
 
 }

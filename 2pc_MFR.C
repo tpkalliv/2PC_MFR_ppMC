@@ -34,7 +34,7 @@ TString paramNames[] = {"G", "v22", "v33"};
 void h2dLMTempFit(){
 
  	// Loading data
-	TFile *fIn = new TFile ("output/fout_2pacdist_hist_proj_pp13TeV.root", "read");
+	TFile *fIn = new TFile ("output/fout_2pacdist_hist_pp13TeV.root", "read");
 	TH1D* hY = (TH1D*) fIn->Get("h2pac_corrected_dist_ETAG00C02PTT00"); // HM
 	TH1D* hY_MB = (TH1D*) fIn->Get("h2pac_corrected_dist_ETAG00C00PTT00"); // LM
 	h2dLMTempFitOne(hY, hY_MB, 0, 0, 0);
