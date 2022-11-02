@@ -13,11 +13,8 @@
 	Long-range correlation projections
 */
 
-TH2D *h2D_same[nbins_mult][nbins_pt];
-TH1D *hDeltaphi_same[nbins_mult][nbins_pt];
-TH2D *h2D_mixed[nbins_mult][nbins_pt];
-TH1D *hDeltaphi_mixed[nbins_mult][nbins_pt];
-TH1D *hDeltaphi_trig[nbins_mult];
+TH2D *h2D_corr_dist[nbins_mult][nbins_pt];
+
 
 
 
@@ -29,11 +26,12 @@ void writeToRoot(TString outname);
 void projection() {
 
 	//TString inputname = "input/outfile_hist_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA data
-	TString inputname = "input/outfile_hist_AMPT_pp_13TeV_grp003_pT_try000.root"; // AMPT data
+	TString inputname = "output/fout_corr_dist_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT data
 	load2DHistos(inputname);
 	makeLongRangeCorr();
+	gStyle->SetPalette(55);
 	//TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA
-	TString outname = "output/fout_hist_proj_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
+	TString outname = "output/fout_corr_dist_proj_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
 	writeToRoot(outname);
 
 }
@@ -47,10 +45,7 @@ void load2DHistos(TString inputname){
 
 		for (int ic = 0; ic < nbins_mult; ic++){
 			for (int iptt = 0; iptt < nbins_pt; iptt++){
-				h2D_same[ic][iptt] = (TH2D*) fIn->Get(Form("h2d_same_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
-				h2D_mixed[ic][iptt] = (TH2D*) fIn->Get(Form("h2d_mixed_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
-				hDeltaphi_trig[ic] = (TH1D*) fIn->Get(Form("hntrig_same_fmda_h_mult%02d", ic));	
-
+				h2D_corr_dist[ic][iptt] = (TH2D*) fIn->Get(Form("h2D_corr_dist_proj_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
 			} // iptt
 		} // ic
 	}
@@ -61,20 +56,15 @@ void makeLongRangeCorr() {
 	for (int ic = 0; ic < nbins_mult; ic++){
 		for (int iptt = 0; iptt < nbins_pt-1; iptt++){
 
-			hDeltaphi_same[ic][iptt] = (TH1D*) h2D_same[ic][iptt]->ProjectionX(Form("h2dsameETAG%02dC%02dPTT%02d", 00, ic, iptt), h2D_same[ic][iptt]->GetYaxis()->FindBin(1.9), h2D_same[ic][iptt]->GetYaxis()->FindBin(4.8));
-			//TH1D *hTemp_same = (TH1D*) h2D_same->ProjectionX(Form("h2dsameETAG%02dC%02diptt%02d", 00, 21, 00), h2D_same->GetYaxis()->FindBin(-3.1), h2D_same->GetYaxis()->FindBin(-1.9));
-			//hDeltaphi_same->Add(hTemp_same, 1);
-			
-			hDeltaphi_mixed[ic][iptt] = (TH1D*) h2D_mixed[ic][iptt]->ProjectionX(Form("h2dmixETAG%02dC%02dPTT%02d", 00, ic, iptt), h2D_mixed[ic][iptt]->GetYaxis()->FindBin(1.9), h2D_mixed[ic][iptt]->GetYaxis()->FindBin(4.8));
-			//TH1D *hTemp_mixed = (TH1D*) h2D_mixed->ProjectionX(Form("h2dmixETAG%02dC%02diptt%02d", 00, 21, 00), h2D_mixed->GetYaxis()->FindBin(-3.1), h2D_mixed->GetYaxis()->FindBin(-1.9));
-			//hDeltaphi_mixed->Add(hTemp_mixed, 1);
+			hDeltaphi_corr[ic][iptt] = (TH1D*) h2D_corr_dist[ic][iptt]->ProjectionX(Form("h2dsameETAG%02dC%02dPTT%02d", 00, ic, iptt), 
+				h2D_corr_dist[ic][iptt]->GetYaxis()->FindBin(1.9), h2D_corr_dist[ic][iptt]->GetYaxis()->FindBin(4.8));
 
 		} // iptt
 	} // ic
 } 
 
 
-void writeToRoot(TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root") {
+void writeToRoot(TString outname = "output/fout_corr_dist_hist_proj_pp13TeV_set00_grp000_pT_try000.root") {
 
 	TFile* fOut = new TFile (outname, "recreate");
 	//TString htitle;
@@ -84,9 +74,7 @@ void writeToRoot(TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_p
 	for (int ic = 0; ic < nbins_mult; ic++){
 		for (int iptt = 0; iptt < nbins_pt-1; iptt++){
 
-			hDeltaphi_same[ic][iptt]->Write(Form("h2dsameETAG%02dC%02dPTT%02d", 00, ic, iptt));
-			hDeltaphi_mixed[ic][iptt]->Write(Form("h2dmixETAG%02dC%02dPTT%02d", 00, ic, iptt));
-			hDeltaphi_trig[ic]->Write(Form("h2dtrigETAG%02dC%02d", 00, ic));
+			hDeltaphi_corr[ic][iptt]->Write(Form("h2dCorrC%02dPTT%02d", ic, iptt));
 
 		} // iptt
 	} // ic
