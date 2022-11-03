@@ -42,7 +42,7 @@ void longrangecorrdist() {
 	
 	// Sample draw
 	gStyle->SetPalette(55);
-	h2d_corr_final[2][9]->Draw("[cut1,-cut2],SURF2Z");
+	h2d_corr_final[3][9]->Draw("[cut1,-cut2],SURF2Z");
 
 }
 
@@ -68,16 +68,16 @@ void loadhistos(TString inputname){
 // Correlation distribution
 void makeLongRangeCorrDist(TH2D* h2d_same, TH2D* h2d_mixed, TH1D* hdeltaphi_trig, int ic, int iptt) {
 
-	Double_t trig_content = hdeltaphi_trig->GetBinContent(1);
-	Int_t scale = trig_content; 
+	// Scaling S and B distribution
 
-	h2d_same->Scale(1/trig_content);
+	Double_t trig_content = hdeltaphi_trig->GetBinContent(iptt+1);
+	Int_t scale = trig_content; 
+	h2d_same->Scale(1/trig_content); // S*(1/N_trig)
+
 	Double_t hB_Norm = h2d_mixed->GetMaximum();
-	h2d_mixed->Scale(1/hB_Norm);
+	h2d_mixed->Scale(1/hB_Norm); // B*(1/B(0,0))
 
 	TH2D* h2d_Corr = (TH2D*) h2d_same->Clone();
-
-	Int_t binamount = h2d_Corr->GetXaxis()->GetNbins();
 
 	/*
 		Dividing (1/N_trig)*S with B/B(0,0) to get C function 
@@ -105,7 +105,7 @@ void writeToRoot(TString outname){
 			for (int iptt = 0; iptt < nbins_pt; iptt++){
 				
 				h2d_corr_final[ic][iptt]->SetTitle(Form("h2d_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
-				h2d_corr_final[ic][iptt]->Write();
+				h2d_corr_final[ic][iptt]->Write(Form("h2d_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d",ic, iptt));
 			} // iptt
 		} // ic
 }

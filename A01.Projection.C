@@ -1,4 +1,4 @@
-#include "arrlist.h"
+
 #include <TFile.h>
 #include <TH2D.h>
 #include <TH1D.h>
@@ -10,10 +10,11 @@
 	Date: 19.10.2022
 
 	Program info:
-	Long-range correlation projections
+	Long-range correlation projections for AMPT model data
 */
 
 TH2D *h2D_corr_dist[nbins_mult][nbins_pt];
+TH1D *hDeltaphi_corr[nbins_mult][nbins_pt];
 
 
 
@@ -29,9 +30,8 @@ void projection() {
 	TString inputname = "output/fout_corr_dist_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT data
 	load2DHistos(inputname);
 	makeLongRangeCorr();
-	gStyle->SetPalette(55);
 	//TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA
-	TString outname = "output/fout_corr_dist_proj_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
+	TString outname = "2.output_projections/fout_corr_dist_proj_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
 	writeToRoot(outname);
 
 }
@@ -45,7 +45,10 @@ void load2DHistos(TString inputname){
 
 		for (int ic = 0; ic < nbins_mult; ic++){
 			for (int iptt = 0; iptt < nbins_pt; iptt++){
-				h2D_corr_dist[ic][iptt] = (TH2D*) fIn->Get(Form("h2D_corr_dist_proj_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
+
+				h2D_corr_dist[ic][iptt] = (TH2D*) fIn->Get(Form("h2d_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
+
+
 			} // iptt
 		} // ic
 	}
@@ -54,17 +57,19 @@ void load2DHistos(TString inputname){
 void makeLongRangeCorr() {
 
 	for (int ic = 0; ic < nbins_mult; ic++){
-		for (int iptt = 0; iptt < nbins_pt-1; iptt++){
+		for (int iptt = 0; iptt < nbins_pt; iptt++){
 
-			hDeltaphi_corr[ic][iptt] = (TH1D*) h2D_corr_dist[ic][iptt]->ProjectionX(Form("h2dsameETAG%02dC%02dPTT%02d", 00, ic, iptt), 
+			cout << "ic " << ic << " iptt " << iptt << endl;
+			hDeltaphi_corr[ic][iptt] = (TH1D*) h2D_corr_dist[ic][iptt]->ProjectionX(Form("h2d_corr_proj_hist_C%02dPTT%02d", ic, iptt), 
 				h2D_corr_dist[ic][iptt]->GetYaxis()->FindBin(1.9), h2D_corr_dist[ic][iptt]->GetYaxis()->FindBin(4.8));
+			
 
 		} // iptt
 	} // ic
 } 
 
 
-void writeToRoot(TString outname = "output/fout_corr_dist_hist_proj_pp13TeV_set00_grp000_pT_try000.root") {
+void writeToRoot(TString outname) {
 
 	TFile* fOut = new TFile (outname, "recreate");
 	//TString htitle;
@@ -72,9 +77,9 @@ void writeToRoot(TString outname = "output/fout_corr_dist_hist_proj_pp13TeV_set0
 	//hDeltaphi->SetTitle(htitle);
 
 	for (int ic = 0; ic < nbins_mult; ic++){
-		for (int iptt = 0; iptt < nbins_pt-1; iptt++){
+		for (int iptt = 0; iptt < nbins_pt; iptt++){
 
-			hDeltaphi_corr[ic][iptt]->Write(Form("h2dCorrC%02dPTT%02d", ic, iptt));
+			hDeltaphi_corr[ic][iptt]->Write(Form("h2dCorrProjC%02dPTT%02d", ic, iptt));
 
 		} // iptt
 	} // ic

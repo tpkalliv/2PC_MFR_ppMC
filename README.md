@@ -1,1 +1,0 @@
-This is repository for monte-carlo simulation for two-particle correlation at mid-rapidity in pp collisions.

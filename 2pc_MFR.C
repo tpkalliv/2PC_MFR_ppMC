@@ -7,15 +7,16 @@
 #include "TLegend.h"
 #include <iostream>
 #include <fstream>
-#include "bininfo.h"
+
+int NH = 2;
 
 
 /*
-	This code is for 2 particle correlation for mid-forward rapidity in pp collisions from EPOS and AMTP models
+	This code is for 2 particle correlation for mid-forward rapidity in pp collisions from PYTHIA and AMTP models
 */
 
 
-void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt, int ig); 
+void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt); 
 
 Double_t Chi2(TH1D *hY_a, TF1 *fFit);
 
@@ -29,21 +30,25 @@ TString errNames[] = {"fit_G_err","fit_V2_err ","fit_V3_err "};
 TString paramNames[] = {"G", "v22", "v33"};
 
 //---------------------------------------
-// Test with ALICE data
+// Test with test data
 //---------------------------------------
+
+/*
 void h2dLMTempFit(){
 
  	// Loading data
-	TFile *fIn = new TFile ("output/fout_2pacdist_hist_pp13TeV.root", "read");
-	TH1D* hY = (TH1D*) fIn->Get("h2pac_corrected_dist_ETAG00C02PTT00"); // HM
-	TH1D* hY_MB = (TH1D*) fIn->Get("h2pac_corrected_dist_ETAG00C00PTT00"); // LM
+	TFile *fIn = new TFile ("output/fout_corr_dist_hist_AMPT_pp13TeV_grp003_pT_try000.root", "read");
+	TH1D* hY = (TH1D*) fIn->Get("h2d_corr_dist_dphi_deta_fmda_h_mult03_pt00"); // HM
+	TH1D* hY_MB = (TH1D*) fIn->Get("h2d_corr_dist_dphi_deta_fmda_h_mult00_pt00"); // LM
 	h2dLMTempFitOne(hY, hY_MB, 0, 0, 0);
 
 }
+*/
+
 //---------------------------------------
 // Two inputs : HM and LM-template, need ic and iptt for multiplicity bin and pt bins
 //---------------------------------------
-void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt, int ig) {
+void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt) {
 	// F factor values
 	Double_t stepsize = (F_max - F_min)/(double) numbOfFVar;
 	for (int i = 0; i <= numbOfFVar; i++) factorF[i] = F_min + (i*stepsize);
@@ -83,7 +88,7 @@ void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt, int ig) {
 		fFit[j]= new TF1(Form("fFit%d",j), cos, -TMath::Pi()/2.0, 3.0*TMath::Pi()/2.0);
 		fFit[j]->SetParameter(0, 1);
 		for (int i = 0; i < NH; i++) fFit[j]->SetParName(i+1, paramNames[i]); 
-		for (int i = 0; i < NH; i++) fFit[j]->SetParameter(i+1, TMath::Power(1.0 - (i*0.06),2)); // Initial Vn values are Vn(delta)phi = Vn^2
+		for (int i = 0; i < NH; i++) fFit[j]->SetParameter(i+1,0.06); // Initial Vn values are Vn(delta)phi = Vn^2
 
  		chi2val = 0;
  		hY_a = (TH1D*) hY->Clone(); 
@@ -134,7 +139,7 @@ void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt, int ig) {
 
 
 	// SAVINGS (Signal, Fit, F*Y_LM+G)
-	TFile *fOut = new TFile (Form("2.output_LMfits/out_LMtemplate_C%02dPTT%02dETAG%02d.root",ic,iptt, ig), "recreate");
+	TFile *fOut = new TFile (Form("3.output_LMfits/out_LMtemplate_C%02dPTT%02d.root",ic,iptt), "recreate");
 	hY->Write("hDphiHM"); // SIGNAL
 	fBestFit->Write("fFit_best"); 
 	hY_a_G->Write("hY_a_G"); // F*Y_LM+G
@@ -148,7 +153,7 @@ void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt, int ig) {
 	Double_t ScaleFYmin = factorF[index]*Y_LM_min;
 	// Saving vn results to text file
 	fstream file;
-	TString outtextname = Form("2.output_LMfits/out_LMtemplate_C%02dPTT%02dETAG%02d.txt",ic,iptt, ig);
+	TString outtextname = Form("3.output_LMfits/out_LMtemplate_C%02dPTT%02d.txt",ic,iptt);
     file.open(outtextname.Data(), ios_base::out);
 
 	for (Int_t n=0; n<NH; n++)
@@ -163,8 +168,8 @@ void h2dLMTempFitOne(TH1D* hY ,TH1D* hY_MB, int ic, int iptt, int ig) {
 		fitvn_s[n]->Write();
 	}
 	
-	// Writes ig, ic, iptt, vns, vn error to a txt file for z03.makegraphs.C to read
-	TString texttmp = Form("%d %d %d %.5f %.5f %.5f %.5f\n", ig, ic, iptt, vn[0], vnError[0], vn[1], vnError[1]);
+	// Writes ic, iptt, vns, vn error to a txt file for z03.makegraphs.C to read
+	TString texttmp = Form("%d %d %.5f %.5f %.5f %.5f\n", ic, iptt, vn[0], vnError[0], vn[1], vnError[1]);
 	file << texttmp.Data();
 	file.close();
 
