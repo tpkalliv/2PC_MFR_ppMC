@@ -1,4 +1,4 @@
-
+#include "arrlist.h"
 #include <TFile.h>
 #include <TH2D.h>
 #include <TH1D.h>
@@ -26,14 +26,18 @@ void writeToRoot(TString outname);
 // Program starts here
 void projection() {
 
-	//TString inputname = "input/outfile_hist_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA data
 	TString inputname = "output/fout_corr_dist_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT data
 	load2DHistos(inputname);
 	makeLongRangeCorr();
-	//TString outname = "output/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA
 	TString outname = "2.output_projections/fout_corr_dist_proj_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
 	writeToRoot(outname);
 
+
+	inputname = "output/fout_corr_dist_hist_pp13TeV_set00_grp000_pT_try000.root"; // PYTHIA data
+	load2DHistos(inputname);
+	makeLongRangeCorr();
+	outname = "2.output_projections/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root";
+	writeToRoot(outname);
 }
 
 /* 
