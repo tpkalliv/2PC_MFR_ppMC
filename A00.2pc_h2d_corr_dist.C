@@ -7,11 +7,12 @@
 
 /*	
 	Author: Teemu Kallio
-	Version: 1.0
-	Date: 19.10.2022
+	Version: 1.01
+	Date: 04.11.2022
 
 	Program info:
-	Correlation distributions
+	Correlation distributions for AMPT and PYTHIA model data
+
 */
 
 
@@ -39,10 +40,7 @@ void longrangecorrdist() {
 	loadhistos(inputname);
 	outname = "output/fout_corr_dist_hist_AMPT_pp13TeV_grp003_pT_try000.root"; // AMPT
 	writeToRoot(outname);
-	
-	// Sample draw
-	gStyle->SetPalette(55);
-	h2d_corr_final[3][9]->Draw("[cut1,-cut2],SURF2Z");
+
 
 }
 
@@ -104,8 +102,32 @@ void writeToRoot(TString outname){
 		for (int ic = 0; ic < nbins_mult; ic++){
 			for (int iptt = 0; iptt < nbins_pt; iptt++){
 				
-				h2d_corr_final[ic][iptt]->SetTitle(Form("h2d_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
-				h2d_corr_final[ic][iptt]->Write(Form("h2d_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d",ic, iptt));
+				if (outname == "output/fout_corr_dist_hist_pp13TeV_set00_grp000_pT_try000.root"){
+					h2d_corr_final[ic][iptt]->SetTitle(Form("h2d_pythia_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
+					h2d_corr_final[ic][iptt]->Write(Form("h2d_pythia_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d",ic, iptt));
+					TCanvas *c1 = new TCanvas(Form("h2d_pythia_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt),
+						Form("h2d_pythia_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt), 850, 500);
+					gStyle->SetPalette(55);
+					h2d_corr_final[ic][iptt]->Draw("[cut1,-cut2],SURF2Z");
+					c1->SaveAs(Form("figs/h2d_pythia_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d.pdf", ic, iptt));
+					if (c1) { c1->Close(); gSystem->ProcessEvents(); delete c1; c1 = 0; } 
+
+
+				}
+
+
+				if (outname == "output/fout_corr_dist_hist_AMPT_pp13TeV_grp003_pT_try000.root"){
+
+					h2d_corr_final[ic][iptt]->SetTitle(Form("h2d_ampt_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt));
+					h2d_corr_final[ic][iptt]->Write(Form("h2d_ampt_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d",ic, iptt));
+					TCanvas *c1 = new TCanvas(Form("h2d_ampt_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt),
+						Form("h2d_ampt_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d", ic, iptt), 850, 500);
+					gStyle->SetPalette(55);
+					h2d_corr_final[ic][iptt]->Draw("[cut1,-cut2],SURF2Z");
+					c1->SaveAs(Form("figs/h2d_ampt_corr_dist_dphi_deta_fmda_h_mult%02d_pt%02d.pdf", ic, iptt));
+					if (c1) { c1->Close(); gSystem->ProcessEvents(); delete c1; c1 = 0; }
+				}
+
 			} // iptt
 		} // ic
 }

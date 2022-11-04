@@ -5,7 +5,7 @@ import scipy
 from scipy import interpolate
 
 import sys
-sys.path.append("JPyPlotRatio");
+sys.path.append("/home/tkallio/GitHub/JPyPlotRatio");
 
 
 import JPyPlotRatio
@@ -15,8 +15,9 @@ For figs
 '''
 
 file = sys.argv[1];
+file2 = sys.argv[2];
 # data set is manual
-datatitle = "AMPT" 
+datatitle = file2; 
 outfigname = file.replace(".root","_fit.png")
 
 f = ROOT.TFile(file,"read");
@@ -48,10 +49,11 @@ plables = [ ""
 		 ];
 # model names : for histonames in ROOT file
 #modelStrInROOT = ["pythiadefault","stringshoving","eposlhc"]; # for data reading
-modelStr = ["AMPT near-side","AMPT away-side"]; # for legend
+modelStr = ["near-side","away-side"]; # for legend
 
 #TypeName =["Signal", "Fit", "$F$LM + $G$","$G$(1 + $v_{2,2}$)","$G$(1 + $v_{3,3}$)" ];
-TypeName =["Signal (0--0.1\%)", "Fit","$FY_{\\mathrm{LM}} + G$", "$G(1+2v_{2,2}cos(2\\Delta\\varphi))$ \n $+ FY_{\\mathrm{LM,min}}$","$G(1+2v_{3,3}cos(3\\Delta\\varphi))$ \n $+ FY_{\\mathrm{LM,min}}$"];
+TypeName =["Signal (0--0.1\%)", "Fit","$FY_{\\mathrm{LM}} + G$", "$G(1+2v_{2,2}cos(2\\Delta\\varphi))$ \n $+ FY_{\\mathrm{LM,min}}$",
+"$G(1+2v_{3,3}cos(3\\Delta\\varphi))$ \n $+ FY_{\\mathrm{LM,min}}$"];
 
 #xtitle = ["$p_\\mathrm{T,trig(assoc)} (\\mathrm{GeV}/c)$"];
 xtitle = ["$\\Delta\\varphi (\\mathrm{rad})$"];
@@ -63,16 +65,18 @@ toptitle = "pp $\\sqrt{s}$ = 13 TeV"; # need to add on the top
 
 # getting result informations
 # htitle =  15< N_{ch}<35, 4.000< p_{T} <6.000, 1.6< |#Delta#eta| <1.8
+
 hist = f.Get("hDphiHM")
 htitle = hist.GetTitle()
 print("htitle = ", htitle)
+'''
 hinfo = htitle.split(",")
 TypeName[0] = "$"+hinfo[0]+"$"
 hinfo[1] = hinfo[1].replace(".000",".0")
 dataDetail = "$"+hinfo[1]+" (\\mathrm{GeV}/c)$"
 hinfo[2] = hinfo[2].replace("#","\\")
 dataDetailEta = "$"+hinfo[2]+"$"
-
+'''
 
 plot = JPyPlotRatio.JPyPlotRatio(panels=(nrow,ncol),
 	panelsize=(12,12), # change the size
@@ -109,9 +113,11 @@ for d in range(0,5):
 f.Close();
 
 plot.GetPlot().text(0.38,0.83,datatitle,fontsize=11);
+'''
 plot.GetPlot().text(0.38,0.79,toptitle,fontsize=11);
 plot.GetPlot().text(0.38,0.75,dataDetail,fontsize=11);
 plot.GetPlot().text(0.38,0.71,dataDetailEta,fontsize=11);
+'''
 plot.GetRatioAxes(0).xaxis.set_ticks_position('both');
 plot.GetRatioAxes(0).yaxis.set_ticks_position('both');
 #plot.GetAxes(0).xticks(rotation=45)

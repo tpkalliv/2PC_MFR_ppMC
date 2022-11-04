@@ -26,24 +26,27 @@ void loadingData() {
 	for (int ic = 0; ic < nbins_mult; ic++) {
 		for (int iptt = 0; iptt < nbins_pt; iptt++) {
 
-				hDeltaphi[ic][iptt] = (TH1D*) fIn->Get(Form("h2dCorrProjC%02dPTT%02d", ic, iptt));
+				hDeltaphi[ic][iptt] = (TH1D*) fIn->Get(Form("h2dAMPTCorrProjC%02dPTT%02d", ic, iptt));
 
 			
 		} // iptt
 	} // ic
 
+	/*
 	fIn = new TFile ("2.output_projections/fout_hist_proj_pp13TeV_set00_grp000_pT_try000.root", "read"); // input file
 
 	for (int ic = 0; ic < nbins_mult; ic++) {
 		for (int iptt = 0; iptt < nbins_pt; iptt++) {
 
-				hDeltaphi[ic][iptt] = (TH1D*) fIn->Get(Form("h2dCorrProjC%02dPTT%02d", ic, iptt));
+				hDeltaphi[ic][iptt] = (TH1D*) fIn->Get(Form("h2dPythiaCorrProjC%02dPTT%02d", ic, iptt));
 
 			
 		} // iptt
 	} // ic
+	*/
 
 }
+
 
 void AnaAllCentPtBins() {
 
